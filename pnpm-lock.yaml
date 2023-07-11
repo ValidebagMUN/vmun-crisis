@@ -7183,7 +7183,7 @@ packages:
       readable-stream: 3.6.2
 
   github.com/ariutta/svg-pan-zoom/632c04b408854926087266022aff7557a363e1ba:
-    resolution: {commit: 632c04b408854926087266022aff7557a363e1ba, repo: git+ssh://git@github.com/ariutta/svg-pan-zoom.git, type: git}
+    resolution: {commit: 632c04b408854926087266022aff7557a363e1ba, repo: https://@github.com/ariutta/svg-pan-zoom.git, type: git}
     name: svg-pan-zoom
     version: 3.6.1
     dev: false
