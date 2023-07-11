@@ -15,6 +15,7 @@
     "nuxt": "^3.6.2"
   },
   "dependencies": {
+    "hammerjs": "^2.0.8",
     "nuxt-mongoose": "^0.0.9",
     "svg-pan-zoom": "github:ariutta/svg-pan-zoom"
   }

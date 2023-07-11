@@ -1,5 +1,5 @@
 <template>
-    <svg id="TurkeyMap" class="map" version="1.1" viewBox="0 0 1828 788" xml:space="preserve"
+    <svg id="turkey-map" class="map" version="1.1" viewBox="0 0 1828 788" xml:space="preserve"
         inkscape:version="1.2.2 (732a01da63, 2022-12-09)" inkscape:dataloss="true" inkscape:export-filename="tr19301.svg"
         inkscape:export-xdpi="96" inkscape:export-ydpi="96" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
         xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg"
@@ -209,11 +209,77 @@
     </svg>
 </template>
 
-<script setup lang="ts">
-//@ts-ignore
+<script setup lang="js">
 import svgPanZoom from 'svg-pan-zoom';
-onMounted(() => {
-    var panZoom = svgPanZoom('#TurkeyMap')
+import Hammer from 'hammerjs';
+
+onNuxtReady(() => {
+    var eventsHandler;
+
+    eventsHandler = {
+        haltEventListeners: ['touchstart', 'touchend', 'touchmove', 'touchleave', 'touchcancel']
+        , init: function (options) {
+            var instance = options.instance
+                , initialScale = 1
+                , pannedX = 0
+                , pannedY = 0
+
+            // Init Hammer
+            // Listen only for pointer and touch events
+            this.hammer = Hammer(options.svgElement, {
+                inputClass: Hammer.SUPPORT_POINTER_EVENTS ? Hammer.PointerEventInput : Hammer.TouchInput
+            })
+
+            // Enable pinch
+            this.hammer.get('pinch').set({ enable: true })
+
+            // Handle double tap
+            this.hammer.on('doubletap', function (ev) {
+                instance.zoomIn()
+            })
+
+            // Handle pan
+            this.hammer.on('panstart panmove', function (ev) {
+                // On pan start reset panned variables
+                if (ev.type === 'panstart') {
+                    pannedX = 0
+                    pannedY = 0
+                }
+
+                // Pan only the difference
+                instance.panBy({ x: ev.deltaX - pannedX, y: ev.deltaY - pannedY })
+                pannedX = ev.deltaX
+                pannedY = ev.deltaY
+            })
+
+            // Handle pinch
+            this.hammer.on('pinchstart pinchmove', function (ev) {
+                // On pinch start remember initial zoom
+                if (ev.type === 'pinchstart') {
+                    initialScale = instance.getZoom()
+                    instance.zoomAtPoint(initialScale * ev.scale, { x: ev.center.x, y: ev.center.y })
+                }
+
+                instance.zoomAtPoint(initialScale * ev.scale, { x: ev.center.x, y: ev.center.y })
+            })
+
+            // Prevent moving the page on some devices when panning over SVG
+            options.svgElement.addEventListener('touchmove', function (e) { e.preventDefault(); });
+        }
+
+        , destroy: function () {
+            this.hammer.destroy()
+        }
+    }
+
+    // Expose to window namespace for testing purposes
+    window.panZoom = svgPanZoom('#turkey-map', {
+        zoomEnabled: true
+        , controlIconsEnabled: true
+        , fit: 1
+        , center: 1
+        , customEventsHandler: eventsHandler
+    });
 })
 </script>
 

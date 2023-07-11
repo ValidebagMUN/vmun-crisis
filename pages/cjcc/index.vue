@@ -1,7 +1,5 @@
 <template>
-    <div>
-        <Topbar />
-    </div>
+    <Topbar />
     <ClientOnly>
         <TurkeyMap />
     </ClientOnly>
