@@ -19,7 +19,22 @@ interface User extends Credentials {
 }
 
 export default NuxtAuthHandler({
-    secret: config.authSecret,
+    secret: config.AUTH_SECRET,
+    callbacks: {
+        jwt: async ({token, user}) => {
+            const isSignIn = user ? true : false;
+            if (isSignIn) {
+                token.id = user ? user.id || '' : '';
+                token.side = user ? (user as any).side || '' : '';
+              }
+              return Promise.resolve(token);
+        },
+        session: async ({session, token}) => {
+            (session as any).side = token.side;
+            (session as any).uid = token.id;
+            return Promise.resolve(session);
+        },
+    },
     providers: [
         //@ts-expect-error
         CredentialsProvider.default({
@@ -33,10 +48,12 @@ export default NuxtAuthHandler({
                 if (user) {
                     if (credentials?.username === user.username && bcrypt.compareSync(credentials?.password, user.password)) {
                         // Any object returned will be saved in `user` property of the JWT .slice(13,37)
-                        return {
+                        const u = {
+                            id: user._id.toString(),
                             name: user.username,
-                            email: user.side
+                            side: user.side
                         }
+                        return u;
                         } else {
                         // eslint-disable-next-line no-console
                         console.error('Warning: Malicious login attempt registered, bad credentials provided \n', req)
