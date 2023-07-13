@@ -28,6 +28,9 @@ export default defineNuxtConfig({
     globalAppMiddleware: true
   },
   runtimeConfig: {
-    authSecret: process.env.AUTH_SECRET || "/.It??=Kznez5E5y(R[a(zrNAIN7y9"
+    AUTH_SECRET: process.env.AUTH_SECRET || "/.It??=Kznez5E5y(R[a(zrNAIN7y9",
+    public: {
+      SENTRY_DSN: process.env.SENTRY_DSN
+    }
   }
 })
