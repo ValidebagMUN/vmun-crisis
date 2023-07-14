@@ -3,7 +3,6 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     '@sidebase/nuxt-auth',
-    'nuxt-mongoose',
   ],
   devtools: { enabled: true },
   app: {
@@ -29,8 +28,6 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     AUTH_SECRET: process.env.AUTH_SECRET || "/.It??=Kznez5E5y(R[a(zrNAIN7y9",
-    public: {
-      SENTRY_DSN: process.env.SENTRY_DSN
-    }
+    DATABASE_URL: process.env.DATABASE_URL
   }
 })

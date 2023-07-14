@@ -1,22 +1,12 @@
 import { NuxtAuthHandler } from '#auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import { PrismaClient } from "@prisma/client";
 //@ts-expect-error
 import bcrypt from 'bcrypt'
-import { users } from '../../models'
 
 const config = useRuntimeConfig()
 
-interface Credentials {
-    username: string,
-    password: string
-}
-
-interface User extends Credentials {
-    _id: string
-    side: string,
-    createdAt: Date,
-    updatedAt: Date
-}
+const prisma = new PrismaClient()
 
 export default NuxtAuthHandler({
     secret: config.AUTH_SECRET,
@@ -30,8 +20,8 @@ export default NuxtAuthHandler({
               return Promise.resolve(token);
         },
         session: async ({session, token}) => {
-            (session as any).side = token.side;
-            (session as any).uid = token.id;
+            (session as any).user.side = token.side;
+            (session as any).user.uid = token.id;
             return Promise.resolve(session);
         },
     },
@@ -43,24 +33,21 @@ export default NuxtAuthHandler({
                 username: { label: 'Username', type: 'text', placeholder: '' },
                 password: { label: 'Password', type: 'password', placeholder: '' }
             },
-            async authorize (credentials: Credentials, req: any) {
-                const user: User | null = await users.findOne({username: credentials.username})
+            async authorize (credentials: any, req: any) {
+                const prisma = new PrismaClient()
+                const user = await prisma.User.findFirst({where: {name: credentials.username}});
+                console.log(user)     
                 if (user) {
-                    if (credentials?.username === user.username && bcrypt.compareSync(credentials?.password, user.password)) {
-                        // Any object returned will be saved in `user` property of the JWT .slice(13,37)
+                    console.log(bcrypt.compareSync(credentials.password, user.password))
+                    if (bcrypt.compareSync(credentials.password, user.password)) {
                         const u = {
-                            id: user._id.toString(),
-                            name: user.username,
+                            id: user.id,
+                            name: user.name,
                             side: user.side
                         }
-                        return u;
-                        } else {
-                        // eslint-disable-next-line no-console
-                        console.error('Warning: Malicious login attempt registered, bad credentials provided \n', req)
-                        // If you return null then an error will be displayed advising the user to check their details.
-                        return null
-                        // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
-                        }
+                        return u
+                    }
+                    else return null
                 }
                 else return null
             }
