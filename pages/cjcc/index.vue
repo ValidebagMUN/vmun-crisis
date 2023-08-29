@@ -1,16 +1,14 @@
 <template>
-    <div>
-        <Topbar />
-    </div>
+    <Topbar />
     <ClientOnly>
-        <TurkeyMap />
+        <EurasiaMap />
     </ClientOnly>
 </template>
 
 <script setup lang="ts">
 useHead({
     bodyAttrs: {
-        class: 'bg-[#5B7080] font-serif'
+        class: 'bg-[#5B7080] font-garamond'
     }
 })
 </script>

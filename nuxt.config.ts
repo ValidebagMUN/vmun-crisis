@@ -2,12 +2,9 @@
 export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
-    'nuxt-mongoose',
+    '@sidebase/nuxt-auth',
   ],
   devtools: { enabled: true },
-  nitro: {
-    plugins: ['~/server/index.ts']
-  },
   app: {
     head: {
       link: [
@@ -25,5 +22,12 @@ export default defineNuxtConfig({
         }
       }
     }
+  },
+  auth: {
+    globalAppMiddleware: true
+  },
+  runtimeConfig: {
+    AUTH_SECRET: process.env.AUTH_SECRET || "/.It??=Kznez5E5y(R[a(zrNAIN7y9",
+    DATABASE_URL: process.env.DATABASE_URL
   }
 })
