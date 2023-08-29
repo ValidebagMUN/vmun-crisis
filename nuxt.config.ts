@@ -24,10 +24,10 @@ export default defineNuxtConfig({
     }
   },
   auth: {
-    globalAppMiddleware: true
+    globalAppMiddleware: true,
+    origin: process.env.VERCEL_URL || "http://localhost:3000"
   },
   runtimeConfig: {
-    AUTH_ORIGIN: process.env.VERCEL_URL || "http://localhost:3000",
     AUTH_SECRET: process.env.AUTH_SECRET || "/.It??=Kznez5E5y(R[a(zrNAIN7y9",
     DATABASE_URL: process.env.DATABASE_URL
   }
