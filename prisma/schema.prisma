@@ -14,8 +14,6 @@ model User {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String?   @unique @db.String
   password      String    @db.String
-  email         String?   @unique @db.String
-  image         String?   @db.String
   side          String    @db.String
 
   @@map("users")

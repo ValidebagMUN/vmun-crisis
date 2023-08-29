@@ -34,11 +34,8 @@ export default NuxtAuthHandler({
                 password: { label: 'Password', type: 'password', placeholder: '' }
             },
             async authorize (credentials: any, req: any) {
-                const prisma = new PrismaClient()
-                const user = await prisma.User.findFirst({where: {name: credentials.username}});
-                console.log(user)     
+                const user = await prisma.user.findFirst({where: {name: credentials.username}});
                 if (user) {
-                    console.log(bcrypt.compareSync(credentials.password, user.password))
                     if (bcrypt.compareSync(credentials.password, user.password)) {
                         const u = {
                             id: user.id,
