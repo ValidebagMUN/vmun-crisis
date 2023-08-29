@@ -26,6 +26,6 @@
     "hammerjs": "^2.0.8",
     "mongodb": "^5.7.0",
     "next-auth": "4.21.1",
-    "svg-pan-zoom": "github:ariutta/svg-pan-zoom"
+    "svg-pan-zoom": "^3.6.1"
   }
 }
